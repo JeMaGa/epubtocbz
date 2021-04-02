@@ -4,6 +4,8 @@ import shutil
 import zipfile
 from zipfile import ZipFile, is_zipfile
 
+IMG_PATH = 'tmp/OEBPS/images/'
+
 
 def epubtocbz(file, origin, destination):
     origin_path = origin+'/'+file
@@ -12,15 +14,15 @@ def epubtocbz(file, origin, destination):
     else:
         with ZipFile(origin_path) as origin:
             origin.extractall(path='tmp/')
-            if os.path.isfile('tmp/OEBPS/images/Cover.jpg'):
-                os.rename('tmp/OEBPS/images/Cover.jpg',
-                          'tmp/OEBPS/images/page001.jpg')
+            if os.path.isfile(IMG_PATH + 'Cover.jpg'):
+                os.rename(IMG_PATH + 'Cover.jpg',
+                          IMG_PATH + 'page001.jpg')
                 destination_path = destination+'/' + \
                     file.removesuffix('.epub')+'.cbz'
                 with ZipFile(destination_path, 'w') as destination_file:
-                    for img_file in os.listdir('tmp/OEBPS/images'):
+                    for img_file in os.listdir(IMG_PATH):
                         destination_file.write(
-                            'tmp/OEBPS/images/'+img_file)
+                            IMG_PATH+img_file)
             else:
                 print(f'Cover.jpg file not found in file : {{file}}')
             shutil.rmtree('tmp')
