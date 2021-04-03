@@ -13,7 +13,10 @@ CBZ = '.cbz'
 
 
 def epubtocbz(file, origin, destination):
-    origin_path = origin+'/'+file
+    if origin:
+        origin_path = origin+'/'+file
+    else:
+        origin_path = file
     if not zipfile.is_zipfile(origin_path):
         print(f'{{file}} is not a zip file and cannot be processed.')
     else:
@@ -52,7 +55,14 @@ def main(origin, destination):
         else:
             print(f'No .epub file found in {{origin}}. Exiting')
     else:
-        print(f'{{origin}} is not a directory. Exiting')
+        if os.path.isfile(origin) and origin.endswith(EPUB):
+            if origin.find('/') > -1:
+                [path, file] = origin.rsplit('/', maxsplit=1)
+                epubtocbz(file, path, destination)
+            else:
+                epubtocbz(origin, '', destination)
+        else:
+            print(f'{{origin}} is not a directory or not an EPUB file. Exiting')
 
 
 if __name__ == '__main__':
