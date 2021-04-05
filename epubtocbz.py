@@ -18,7 +18,7 @@ def epubtocbz(file, origin, destination):
     else:
         origin_path = file
     if not zipfile.is_zipfile(origin_path):
-        print(f'{{file}} is not a zip file and cannot be processed.')
+        click.echo(f'{file} is not a zip file and cannot be processed.')
     else:
         with ZipFile(origin_path) as origin:
             origin.extractall(path=TMP_PATH)
@@ -32,7 +32,7 @@ def epubtocbz(file, origin, destination):
                         destination_file.write(
                             TMP_PATH+IMG_PATH+img_file)
             else:
-                print(f'{{COVER}} file not found in file : {{file}}')
+                click.echo(f'{COVER}file not found in file : {file}')
             shutil.rmtree('tmp')
 
 
@@ -46,14 +46,14 @@ def main(origin, destination):
             # destination exists ?
             if not os.path.isdir(destination):
                 os.makedirs(destination)
-                print(
-                    f'The destination path {{destination}} has been created.')
+                click.echo(
+                    f'The destination path {destination} has been created.')
             # make something
             with click.progressbar(origin_files, label='Processing files', length=len(origin_files)) as bar:
                 for file in bar:
                     epubtocbz(file, origin, destination)
         else:
-            print(f'No .epub file found in {{origin}}. Exiting')
+            click.echo(f'No .epub file found in {origin}. Exiting')
     else:
         if os.path.isfile(origin) and origin.endswith(EPUB):
             if origin.find('/') > -1:
@@ -62,7 +62,8 @@ def main(origin, destination):
             else:
                 epubtocbz(origin, '', destination)
         else:
-            print(f'{{origin}} is not a directory or not an EPUB file. Exiting')
+            click.echo(
+                f'{origin} is not a directory or not an EPUB file. Exiting')
 
 
 if __name__ == '__main__':
